@@ -19,11 +19,18 @@ const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const searchMovies = async (title) => {
-    const response = await fetch(`${API_URL}&s=${title}`);
-    const data = await response.json();
-
-    setMovies(data.Search);
+  const searchMovies = async (search, pages = 100) => {
+    let allMovies = [];
+    for (let page = 1; page <= pages; page++) {
+      const response = await fetch(`${API_URL}&s=${search}&page=${page}`);
+      const data = await response.json();
+      if (data.Search) {
+        allMovies = allMovies.concat(data.Search);
+      } else {
+        break;
+      }
+    }
+    setMovies(allMovies);
   };
 
   useEffect(() => {
